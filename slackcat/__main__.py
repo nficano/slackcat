@@ -68,7 +68,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Pipe command output to Slack from your terminal!',
     )
-    parser.add_argument('channel', help='output "@channel" or @user')
+    parser.add_argument('channel', help='output "#channel" or @user')
     parser.add_argument('file', help='target file to cat', nargs='?',
                         default=None)
     parser.add_argument('--tail', action='store_true')
