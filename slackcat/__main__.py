@@ -71,7 +71,7 @@ def main():
     parser.add_argument('channel', help='output "@channel" or @user')
     parser.add_argument('file', help='target file to cat', nargs='?',
                         default=None)
-    parser.add_argument("--tail", action="store_true")
+    parser.add_argument('--tail', action='store_true')
     arguments = parser.parse_args()
 
     if arguments.tail:

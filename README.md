@@ -81,7 +81,8 @@ bumpversion [major|minor|patch]
 # Upload the distribution to PyPi
 python setup.py sdist bdist_wheel upload
 
-# Since master often contains work-in-progress changes, increment the version to a patch release to prevent inaccurate attribution.
+# Since master often contains work-in-progress changes, increment the version
+# to a patch release to prevent inaccurate attribution.
 bumpversion --no-tag patch
 
 git push origin master --tags
