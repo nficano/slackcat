@@ -36,14 +36,17 @@ _Make sure to replace the "https://hooks.slack.com/services/..." with the one pr
 
 ```bash
 
-# "Hey what's your public key dog?"
+# - "Hey what's your public key dog?"
 slackcat @doug ~/.ssh/id_rsa.pub
 
-# "Do we still use that crypto library written by the Cheese Cake Factory?"
+# - "Do we still use that crypto library written by the Cheese Cake Factory?"
 grep -r 'from cheesecake.factory import x509' ./ | slackcat @paul
 
-# Send to a channel
+# - "Are you sure it's on your path?"
 echo $PATH | slackcat "#general"
+
+# - "These queries filling up in syslog look suspicious"
+tail -f /var/log/syslog | slackcat "#general" --tail
 ```
 
 ### Customization
