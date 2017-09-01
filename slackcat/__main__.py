@@ -15,7 +15,6 @@ def main():
     """
 
     parser = argparse.ArgumentParser(description=main.__doc__)
-    parser.add_argument('channel', help='output "#channel" or @user')
     parser.add_argument('channel', help='output "@channel" or @user')
     parser.add_argument('source', help='source', nargs='?', default=None)
     parser.add_argument('-f', '--follow', action='store_true', help=(
@@ -26,10 +25,8 @@ def main():
     args = parser.parse_args()
     is_piped = not sys.stdin.isatty()
 
-    if is_piped:
-        slackcat(args.channel, ignore_eof=args.follow)
-    elif args.source:
-        slackcat(args.channel, ignore_eof=args.follow, filepath=args.source)
+    if is_piped or args.source:
+        slackcat(args.channel, filepath=args.source, ignore_eof=args.follow)
     else:
         parser.print_help()
         exit(1)
