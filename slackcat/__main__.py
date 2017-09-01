@@ -4,101 +4,60 @@
 from __future__ import print_function
 import argparse
 import sys
-import json
-import os
 
-try:
-    # Python 3.x
-    from urllib.parse import urlencode
-    import urllib.request as urlrequest
-except ImportError:
-    # Python 2.x
-    from urllib import urlencode
-    import urllib2 as urlrequest
-
-
-class APIError(Exception):
-    pass
-
-
-class FileInput:
-    def __init__(self, file):
-        self.file = file
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kwargs):
-        self.file.close()
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        line = self.file.readline()
-
-        if not line or line == '':
-            raise StopIteration
-
-        return line
-
-
-def incoming_webhooks_api_request(url, payload):
-    """Make request to Slack's incoming webhooks api."""
-
-    payload = json.dumps(payload)
-    data = urlencode({'payload': payload}).encode('utf-8')
-
-    handler = urlrequest.HTTPHandler()
-    opener = urlrequest.build_opener(handler)
-
-    request = urlrequest.Request(url)
-    response = opener.open(request, data)
-
-    if response.getcode() != 200:
-        raise APIError(response.msg)
-    return True
+import slack
+from ioutil import Stream
 
 
 def main():
-    webhook_url = os.environ.get('SLACKCAT_WEBHOOK_URL')
-    username = os.environ.get('SLACKCAT_USERNAME', 'slackcat')
-    icon_url = os.environ.get('SLACKCAT_ICON_URL')
+    """slackcat reads a file and sends it to the a slack channel or user. If
+    the file is a UNIX domain socket or file path, slackcat reads it until EOF.
+    """
 
-    parser = argparse.ArgumentParser(
-        description='Pipe command output to Slack from your terminal!',
-    )
+    parser = argparse.ArgumentParser(description=main.__doc__)
+
     parser.add_argument('channel', help='output "@channel" or @user')
-    parser.add_argument('file', help='target file to cat', nargs='?',
-                        default=None)
-    parser.add_argument('--tail', action='store_true')
-    arguments = parser.parse_args()
+    parser.add_argument('source', help='source', nargs='?', default=None)
+    parser.add_argument('-f', '--follow', action='store_true', help=(
+        'The follow option causes slackcat to not stop when end of file '
+        'is reached, but rather to wait for additional data to be '
+        'appended to the input.')
+    )
+    args = parser.parse_args()
+    is_piped = not sys.stdin.isatty()
 
-    if arguments.tail:
-        with FileInput(sys.stdin) as f:
-            for line in f:
-                incoming_webhooks_api_request(webhook_url, {
-                    'username': username,
-                    'icon_url': icon_url,
-                    'channel': arguments.channel,
-                    'text': '```' + line + '```',
-                })
-
-    if not sys.stdin.isatty():
-        text = sys.stdin.read()
-    elif arguments.file:
-        with open(arguments.file) as fh:
-            text = fh.read()
+    if is_piped:
+        slackcat(args.channel, ignore_eof=args.follow)
+    elif args.source:
+        slackcat(args.channel, ignore_eof=args.follow, filepath=args.source)
     else:
         parser.print_help()
         exit(1)
 
-    incoming_webhooks_api_request(webhook_url, {
-        'username': username,
-        'icon_url': icon_url,
-        'channel': arguments.channel,
-        'text': '```' + text + '```',
-    })
+
+def slackcat(channel, filepath=None, ignore_eof=False):
+    if filepath and ignore_eof:
+        with open(filepath) as fh:
+            with Stream(fh) as stream:
+                try:
+                    for line in stream:
+                        slack.send_message(channel, line)
+                except KeyboardInterrupt:
+                    exit(0)
+
+    elif filepath and not ignore_eof:
+        with open(filepath) as fh:
+            slack.send_message(channel, fh.read())
+
+    elif not filepath and ignore_eof:
+        with Stream(sys.stdin) as stream:
+            try:
+                for line in stream:
+                    slack.send_message(channel, line)
+            except KeyboardInterrupt:
+                exit(0)
+    else:
+        slack.send_message(channel, sys.stdin.read())
 
 
 if __name__ == '__main__':
