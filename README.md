@@ -46,7 +46,7 @@ grep -r 'from cheesecake.factory import x509' ./ | slackcat @paul
 echo $PATH | slackcat "#general"
 
 # - "These queries filling up in syslog look suspicious"
-tail -f /var/log/syslog | slackcat "#general" --tail
+tail -f /var/log/syslog | slackcat "#general" -f
 ```
 
 ### Customization
