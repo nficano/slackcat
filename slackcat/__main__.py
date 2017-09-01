@@ -15,7 +15,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(description=main.__doc__)
-
+    parser.add_argument('channel', help='output "#channel" or @user')
     parser.add_argument('channel', help='output "@channel" or @user')
     parser.add_argument('source', help='source', nargs='?', default=None)
     parser.add_argument('-f', '--follow', action='store_true', help=(
