@@ -13,7 +13,7 @@ with open('LICENSE') as fh:
 
 setup(
     name='slackcat',
-    version='1.0.1',
+    version='2.0.0',
     author='Nick Ficano',
     author_email='nficano@gmail.com',
     packages=['slackcat'],
