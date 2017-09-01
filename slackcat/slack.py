@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import json
 
 import config
@@ -11,12 +10,14 @@ from exceptions import APIError
 
 def send_message(channel, message, username=None, icon_url=None):
     text = '```{text}```'.format(text=encode(message))
-    _request(config.webhook_url, {
-        'username': username or config.username,
-        'icon_url': icon_url or config.icon_url,
-        'channel': channel,
-        'text': text,
-    })
+    _request(
+        config.webhook_url, {
+            'username': username or config.username,
+            'icon_url': icon_url or config.icon_url,
+            'channel': channel,
+            'text': text,
+        },
+    )
 
 
 def encode(s, decode='unicode_escape', encode='utf-8'):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from __future__ import print_function
+
 import argparse
 import sys
 
@@ -17,10 +17,12 @@ def main():
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('channel', help='output "#channel" or @user')
     parser.add_argument('source', help='source', nargs='?', default=None)
-    parser.add_argument('-f', '--follow', action='store_true', help=(
-        'The follow option causes slackcat to not stop when end of file '
-        'is reached, but rather to wait for additional data to be '
-        'appended to the input.')
+    parser.add_argument(
+        '-f', '--follow', action='store_true', help=(
+            'The follow option causes slackcat to not stop when end of file '
+            'is reached, but rather to wait for additional data to be '
+            'appended to the input.'
+        ),
     )
     args = parser.parse_args()
     is_piped = not sys.stdin.isatty()
