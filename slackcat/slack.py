@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 import json
 
-import config
-from compat import urlencode
-from compat import urlrequest
-from exceptions import APIError
+from . import config
+from .compat import urlencode
+from .compat import urlrequest
+from .exceptions import APIError
 
 
 def send_message(channel, message, username=None, icon_url=None):
