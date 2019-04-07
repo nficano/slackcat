@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://s3.amazonaws.com/assets.nickficano.com/slackcat.svg" height="64">
+  <img src="https://assets.nickficano.com/gh-slackcat.svg" height="64">
   <h2 align="center">SlackCat</h3>
   <p align="center">Concatenate files(s), or <code>stdin</code>, directly to Slack.<br>
   3-minute setup & no third-party integration required.
